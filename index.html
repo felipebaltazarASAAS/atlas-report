@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atlas Code Connect — Relatório</title>
+<style>
+  :root {
+    --bg: #0d1117; --surface: #161b22; --border: #30363d;
+    --text: #e6edf3; --text-muted: #8b949e;
+    --green: #3fb950; --yellow: #d29922; --red: #f85149; --blue: #58a6ff; --purple: #bc8cff;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); padding: 24px; max-width: 1100px; margin: 0 auto; }
+  .header { text-align: center; margin-bottom: 32px; }
+  .header h1 { font-size: 28px; margin-bottom: 4px; }
+  .header p { color: var(--text-muted); font-size: 14px; }
+  .summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; }
+  .card .number { font-size: 36px; font-weight: 700; }
+  .card .label { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+  .card.blue .number { color: var(--blue); }
+  .card.green .number { color: var(--green); }
+  .card.red .number { color: var(--red); }
+  .chart-section { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 32px; }
+  .chart-section h2 { font-size: 16px; margin-bottom: 16px; }
+  .donut-container { display: flex; align-items: center; justify-content: center; gap: 40px; }
+  .donut-wrapper { position: relative; width: 200px; height: 200px; }
+  .donut-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
+  .donut-center .pct { font-size: 32px; font-weight: 700; color: var(--green); }
+  .donut-center .pct-label { font-size: 12px; color: var(--text-muted); }
+  .legend { display: flex; flex-direction: column; gap: 10px; }
+  .legend-item { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+  .legend-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+  .bar-track { height: 24px; background: var(--border); border-radius: 12px; overflow: hidden; display: flex; margin-top: 12px; }
+  .bar-seg { height: 100%; transition: width 0.6s ease; }
+  .table-section { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .table-section h2 { font-size: 16px; padding: 20px 20px 12px; }
+  .filters { display: flex; gap: 8px; padding: 0 20px 16px; flex-wrap: wrap; }
+  .filter-btn { background: var(--bg); border: 1px solid var(--border); color: var(--text-muted); padding: 6px 14px; border-radius: 20px; font-size: 12px; cursor: pointer; transition: all 0.2s; }
+  .filter-btn:hover, .filter-btn.active { border-color: var(--blue); color: var(--blue); }
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; padding: 10px 20px; font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); }
+  td { padding: 10px 20px; font-size: 14px; border-bottom: 1px solid var(--border); }
+  tr:last-child td { border-bottom: none; }
+  tr:hover { background: rgba(255,255,255,0.02); }
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 500; }
+  .badge.connected { background: rgba(63,185,80,0.15); color: var(--green); }
+  .badge.unmapped { background: rgba(139,148,158,0.15); color: var(--text-muted); }
+  .figma-link { color: var(--blue); text-decoration: none; }
+  .figma-link:hover { text-decoration: underline; }
+  @media (max-width: 700px) { .summary { grid-template-columns: 1fr; } .donut-container { flex-direction: column; } }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>Atlas Code Connect</h1>
+  <p>Figma → .NET MAUI · Atualizado em 21/03/2026 02:35</p>
+</div>
+<div class="summary">
+  <div class="card blue"><div class="number">82</div><div class="label">Componentes Figma</div></div>
+  <div class="card green"><div class="number">25 / 82</div><div class="label">Conectados</div></div>
+  <div class="card red"><div class="number">57</div><div class="label">Não conectados</div></div>
+</div>
+<div class="chart-section">
+  <h2>Cobertura Code Connect</h2>
+  <div class="donut-container">
+    <div class="donut-wrapper">
+      <canvas id="donut" width="200" height="200"></canvas>
+      <div class="donut-center">
+        <div class="pct">30.5%</div>
+        <div class="pct-label">conectado</div>
+      </div>
+    </div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#3fb950"></div>Conectado: 25 (30.5%)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#484f58"></div>Não conectado: 57 (69.5%)</div>
+    </div>
+  </div>
+  <div class="bar-track">
+    <div class="bar-seg" style="width:30.5%;background:#3fb950"></div>
+    <div class="bar-seg" style="width:69.5%;background:#484f58"></div>
+  </div>
+</div>
+<div class="table-section">
+  <h2>Componentes</h2>
+  <div class="filters" id="filters"></div>
+  <table>
+    <thead><tr><th>Figma</th><th>Código MAUI</th><th>Status</th><th></th></tr></thead>
+    <tbody id="tbody"></tbody>
+  </table>
+</div>
+<script>
+const DATA = [{"name": "Accordion", "code": "AtlasExpandableView", "status": "connected", "nodeId": "85424:10264"}, {"name": "Action button", "code": "AtlasActionButton", "status": "connected", "nodeId": "26414:97464"}, {"name": "Alert", "code": "AtlasAlert", "status": "connected", "nodeId": "1431:4371"}, {"name": "Autocomplete", "code": "—", "status": "unmapped", "nodeId": "17251:213309"}, {"name": "Badge", "code": "AtlasBadge", "status": "connected", "nodeId": "3649:8149"}, {"name": "Bottom Sheet", "code": "AtlasBottomSheet", "status": "connected", "nodeId": "26889:50232"}, {"name": "Breadcrumb", "code": "—", "status": "unmapped", "nodeId": "96117:498"}, {"name": "Breadcrumb", "code": "—", "status": "unmapped", "nodeId": "4551:14090"}, {"name": "Button", "code": "AtlasButton", "status": "connected", "nodeId": "26278:9873"}, {"name": "Card", "code": "AtlasCard", "status": "connected", "nodeId": "4867:20629"}, {"name": "Carousel-buttons", "code": "—", "status": "unmapped", "nodeId": "4520:14576"}, {"name": "Checkbox button style", "code": "AtlasCheckboxGroup", "status": "connected", "nodeId": "19583:20795"}, {"name": "Checkbox default", "code": "AtlasCheckbox", "status": "connected", "nodeId": "119:478"}, {"name": "Contextual Bar", "code": "—", "status": "unmapped", "nodeId": "30028:52715"}, {"name": "Contextual actions", "code": "—", "status": "unmapped", "nodeId": "40989:338804"}, {"name": "Critical actions/Account activation", "code": "—", "status": "unmapped", "nodeId": "16591:19550"}, {"name": "Critical actions/Token App", "code": "—", "status": "unmapped", "nodeId": "16456:205670"}, {"name": "Critical actions/Token SMS", "code": "—", "status": "unmapped", "nodeId": "16448:205633"}, {"name": "Date Picker", "code": "—", "status": "unmapped", "nodeId": "12408:9966"}, {"name": "Dialog", "code": "AtlasDialog", "status": "connected", "nodeId": "23675:26903"}, {"name": "Div", "code": "—", "status": "unmapped", "nodeId": "6244:30474"}, {"name": "Dropdown button", "code": "—", "status": "unmapped", "nodeId": "13919:148465"}, {"name": "Empty State", "code": "—", "status": "unmapped", "nodeId": "4656:14548"}, {"name": "Filter", "code": "—", "status": "unmapped", "nodeId": "4870:26414"}, {"name": "Fixed Alert", "code": "AtlasBanner", "status": "connected", "nodeId": "6767:32222"}, {"name": "Helper", "code": "—", "status": "unmapped", "nodeId": "7860:41664"}, {"name": "Hotspot", "code": "—", "status": "unmapped", "nodeId": "10567:54589"}, {"name": "Icon button", "code": "—", "status": "unmapped", "nodeId": "22178:270656"}, {"name": "Image preview", "code": "—", "status": "unmapped", "nodeId": "18705:19885"}, {"name": "Input card number", "code": "—", "status": "unmapped", "nodeId": "27772:4918"}, {"name": "Input date", "code": "—", "status": "unmapped", "nodeId": "12408:11688"}, {"name": "Input default", "code": "AtlasFilledEntry", "status": "connected", "nodeId": "111:611"}, {"name": "Input group", "code": "—", "status": "unmapped", "nodeId": "2398:6243"}, {"name": "Input group button", "code": "—", "status": "unmapped", "nodeId": "26955:45760"}, {"name": "Input money default", "code": "—", "status": "unmapped", "nodeId": "48789:15224"}, {"name": "Input money line style", "code": "—", "status": "unmapped", "nodeId": "23939:32841"}, {"name": "Input one-time code", "code": "AtlasOtpOutlinedEntry", "status": "connected", "nodeId": "19049:20234"}, {"name": "Input password", "code": "—", "status": "unmapped", "nodeId": "44297:17717"}, {"name": "Input phone", "code": "—", "status": "unmapped", "nodeId": "17730:20014"}, {"name": "Input search", "code": "AtlasInputSearchView", "status": "connected", "nodeId": "28132:194518"}, {"name": "Labeled content", "code": "AtlasHorizontalDisplayLabel", "status": "connected", "nodeId": "32067:17512"}, {"name": "Link", "code": "—", "status": "unmapped", "nodeId": "23531:26185"}, {"name": "Link button", "code": "—", "status": "unmapped", "nodeId": "71525:8820"}, {"name": "List", "code": "AtlasActionsListView", "status": "connected", "nodeId": "21887:23309"}, {"name": "Modal", "code": "—", "status": "unmapped", "nodeId": "135:619"}, {"name": "Multiselect", "code": "—", "status": "unmapped", "nodeId": "13763:87661"}, {"name": "Navbar", "code": "—", "status": "unmapped", "nodeId": "28034:9916"}, {"name": "Note", "code": "—", "status": "unmapped", "nodeId": "17080:211801"}, {"name": "Notification card", "code": "—", "status": "unmapped", "nodeId": "21492:24358"}, {"name": "Notification/Box", "code": "—", "status": "unmapped", "nodeId": "7223:34189"}, {"name": "Notification/Item", "code": "—", "status": "unmapped", "nodeId": "7223:34197"}, {"name": "Offcanvas", "code": "—", "status": "unmapped", "nodeId": "19432:20267"}, {"name": "Page header", "code": "—", "status": "unmapped", "nodeId": "5053:24551"}, {"name": "Page section", "code": "—", "status": "unmapped", "nodeId": "22716:23915"}, {"name": "Page tab", "code": "AtlasTabbedView", "status": "connected", "nodeId": "13550:87626"}, {"name": "Pagination", "code": "—", "status": "unmapped", "nodeId": "5380:24795"}, {"name": "Panel", "code": "—", "status": "unmapped", "nodeId": "4520:14598"}, {"name": "Popover", "code": "—", "status": "unmapped", "nodeId": "295:5934"}, {"name": "Preview", "code": "—", "status": "unmapped", "nodeId": "8283:31487"}, {"name": "Progress/Progress Indicator", "code": "—", "status": "unmapped", "nodeId": "152:1531"}, {"name": "Progress/Progress bar", "code": "—", "status": "unmapped", "nodeId": "8304:42917"}, {"name": "Promotional Banner", "code": "AtlasPromotionalBanner", "status": "connected", "nodeId": "16558:17273"}, {"name": "Radio button", "code": "AtlasRadioButton", "status": "connected", "nodeId": "119:468"}, {"name": "Rating", "code": "—", "status": "unmapped", "nodeId": "11961:64976"}, {"name": "Scroll bar", "code": "—", "status": "unmapped", "nodeId": "20128:212371"}, {"name": "Section", "code": "—", "status": "unmapped", "nodeId": "15460:10225"}, {"name": "Segmented control", "code": "AtlasSegmentedControl", "status": "connected", "nodeId": "489:18050"}, {"name": "Select", "code": "—", "status": "unmapped", "nodeId": "13938:150503"}, {"name": "Selection card", "code": "—", "status": "unmapped", "nodeId": "39877:12017"}, {"name": "Side Menu", "code": "—", "status": "unmapped", "nodeId": "1112:2986"}, {"name": "Skeleton", "code": "AtlasShimmerView", "status": "connected", "nodeId": "21633:257215"}, {"name": "Spinner", "code": "AtlasProgressLoading", "status": "connected", "nodeId": "8146:6184"}, {"name": "Split Button", "code": "—", "status": "unmapped", "nodeId": "26649:21109"}, {"name": "Summary", "code": "—", "status": "unmapped", "nodeId": "11098:7991"}, {"name": "Switch", "code": "—", "status": "unmapped", "nodeId": "119:459"}, {"name": "Table", "code": "—", "status": "unmapped", "nodeId": "15207:11628"}, {"name": "Tag", "code": "AtlasChip", "status": "connected", "nodeId": "5003:25443"}, {"name": "Text area", "code": "AtlasInputTextArea", "status": "connected", "nodeId": "111:477"}, {"name": "Toast", "code": "AtlasSnackbar", "status": "connected", "nodeId": "21808:3529"}, {"name": "Tooltips", "code": "—", "status": "unmapped", "nodeId": "293:5040"}, {"name": "Uploader", "code": "—", "status": "unmapped", "nodeId": "219:1791"}, {"name": "User Menu", "code": "—", "status": "unmapped", "nodeId": "1120:3446"}];
+const FILE_KEY = 'EpnFuPVWcjDYwkV2o2Vx3I';
+const statusLabel = { connected: 'Conectado', unmapped: 'Não conectado' };
+const statusColor = { connected: '#3fb950', unmapped: '#484f58' };
+
+// Donut
+const canvas = document.getElementById('donut');
+const ctx = canvas.getContext('2d');
+const counts = { connected: 25, unmapped: 57 };
+let startAngle = -Math.PI / 2;
+for (const [s, count] of Object.entries(counts)) {
+  if (!count) continue;
+  const sweep = (count / 82) * Math.PI * 2;
+  ctx.beginPath(); ctx.arc(100, 100, 80, startAngle, startAngle + sweep);
+  ctx.strokeStyle = statusColor[s]; ctx.lineWidth = 24; ctx.stroke();
+  startAngle += sweep;
+}
+
+// Filters
+const filtersEl = document.getElementById('filters');
+let activeFilter = 'all';
+[['all','Todos'],['connected','Conectado'],['unmapped','Não conectado']].forEach(([key, label]) => {
+  const btn = document.createElement('button');
+  btn.className = 'filter-btn' + (key === 'all' ? ' active' : '');
+  btn.textContent = label;
+  btn.onclick = () => { activeFilter = key; document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); renderTable(); };
+  filtersEl.appendChild(btn);
+});
+
+// Table
+const tbody = document.getElementById('tbody');
+function renderTable() {
+  const filtered = activeFilter === 'all' ? DATA : DATA.filter(r => r.status === activeFilter);
+  tbody.innerHTML = filtered.map(r => `<tr>
+    <td>${r.name}</td>
+    <td style="font-family:monospace;font-size:13px;color:${r.code === '\u2014' ? 'var(--text-muted)' : 'var(--text)'}">${r.code}</td>
+    <td><span class="badge ${r.status}">${statusLabel[r.status]}</span></td>
+    <td><a class="figma-link" href="https://www.figma.com/design/${FILE_KEY}/Atlas---Components?node-id=${r.nodeId.replace(':','-')}&m=dev" target="_blank">↗ Figma</a></td>
+  </tr>`).join('');
+}
+renderTable();
+</script>
+</body>
+</html>
