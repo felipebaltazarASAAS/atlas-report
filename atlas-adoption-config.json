@@ -1,0 +1,56 @@
+{
+  "quarter_label": "Q3 2026",
+  "okr_target_pct": 50,
+
+  "priority_flows": ["Pix", "Onboarding externo", "Cobranças", "Listagem de cliente"],
+
+  "product_groups": ["Cartão virtual", "Open Finance", "Token / Segurança", "Múltiplos logins"],
+
+  "flows": {
+    "Pix": ["Pix"],
+    "Onboarding externo": ["ExternalOnboarding"],
+    "Login & Acesso": ["Login", "Authentication", "ResetPassword", "LoginLinkValidation", "Mfa"],
+    "Cobranças": ["Payment", "PaymentCampaign", "PaymentCheckout", "PaymentDunning", "PaymentSimulator", "PaymentSummary", "PaymentWizard", "Bill", "ChargeNow", "Installment", "Subscription", "InterestFineDiscount"],
+    "Listagem de cliente": ["CustomerAccount"],
+    "Nota Fiscal": ["Invoice"],
+    "Antecipação": ["Anticipation"],
+    "Transferências": ["Transfers"],
+    "Cartão virtual": ["AsaasCard"],
+    "Open Finance": ["OpenFinance"],
+    "Token / Segurança": ["Token"],
+    "Múltiplos logins": ["AccountSelection", "AccountUser"]
+  },
+
+  "hackathon_migrated": [],
+
+  "new_screens_q3": [],
+
+  "new_products_q3": [
+    {"name": "Meus benefícios", "screens": null, "atlas": true, "note": "Feature nova — ainda sem telas no código. Preencher 'screens' com a contagem prevista."},
+    {"name": "Widget NPS (POC)", "screens": null, "atlas": true, "note": "POC de nova ferramenta. Preencher 'screens' com a contagem prevista."}
+  ],
+
+  "status_overrides": {},
+
+  "flow_overrides": {},
+
+  "view_pages": [
+    {
+      "flow": "Onboarding externo",
+      "glob": "ExternalOnboarding/Views/Components/Steps/**/*StepView.xaml",
+      "exclude_prefixes": ["Base"],
+      "replaces": ["ExternalOnboardingPage"]
+    }
+  ],
+
+  "_help": {
+    "priority_flows": "Fluxos no escopo da OKR; usados no cenário de meta e marcados como 'prioritário'.",
+    "flows": "Mapa Grupo -> pastas em App/AsaasMobile/Features. Qualquer pasta não listada cai em 'Outros'.",
+    "hackathon_migrated": "Telas migradas no hackathon (nome da Page ou da ViewModel). Contam como Atlas no cenário PROJETADO.",
+    "new_screens_q3": "Telas novas individuais: {\"name\":\"X\",\"flow\":\"Pix\",\"atlas\":true}.",
+    "new_products_q3": "Produtos novos do quarter ainda sem código. screens=null aparece como 'a confirmar'; ao informar um número, entram no total e no Atlas projetado.",
+    "status_overrides": "Corrige a classificação de uma tela: {\"PixIndexPage\":\"legacy\"}. Use quando design discordar da heurística.",
+    "flow_overrides": "Reatribui uma tela a outro grupo: {\"ChargeNowPage\":\"Listagem de cobrança\"}.",
+    "view_pages": "Páginas-carrossel cujas views internas contam como páginas. 'glob' é relativo a Features/; 'replaces' remove a página host para não duplicar. Views são classificadas pelo uso de tokens/componentes Atlas (não pelo root AtlasPage)."
+  }
+}
