@@ -209,6 +209,9 @@ Isso importa porque o limite de `.text` é **por arquivo `.so`** (ver
   arquivo vazio e a aprovar silenciosamente;
 - a divisão em si **não reduz** o `.text` total — só troca o nome do arquivo onde ele mora.
 
+O guard hoje reprova pela condição exata da falha (PLT além do alcance do `BL`, ou veneers apontando
+para ela), não só por tamanho; a saída traz a posição da PLT e a margem de cada imagem.
+
 Rodar o guard explicitamente depois do move, num build Release Android com AOT, e conferir que ele
 lista o `.so` do Core:
 
