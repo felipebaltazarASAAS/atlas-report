@@ -46,7 +46,7 @@ Entry points e coisas que só funcionam no projeto de app:
 - `Platforms/Android/AndroidManifest.xml` e `Platforms/iOS/Info.plist` — os workflows
   `.github/workflows/auto-bump-versions.yml` referenciam esses caminhos exatos
 - Assinatura e ofuscação: `Platforms/Android/KeyStore/debug.keystore`,
-  `Platforms/Android/proguard.cfg`, `Platforms/Android/r8-8.7.18.jar`,
+  `Platforms/Android/proguard.cfg`,
   `Platforms/iOS/Entitlements-Dev.plist`, `Platforms/iOS/Entitlements-Prod.plist`
 - `Platforms/Android/google-services.json`, `Platforms/iOS/GoogleService-Info.plist`,
   `Platforms/iOS/PrivacyInfo.xcprivacy`
