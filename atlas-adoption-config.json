@@ -1,25 +1,114 @@
 {
-  "quarter_label": "Q3 2026",
-  "okr_target_pct": 50,
+  "quarter_label": "Q4 2026",
+  "okr_target_pct": 60,
 
-  "priority_flows": ["Pix", "Onboarding externo", "Cobranças", "Listagem de cliente"],
+  "assume_priority_migrated": true,
 
-  "product_groups": ["Cartão virtual", "Open Finance", "Token / Segurança", "Múltiplos logins"],
+  "chart_projection_default": true,
+  "history_aliases": {"Cartão virtual": "Cartão Mastercard"},
+  "history_method": "Critério atual (versões antigas fora da contagem, escopo Q4)",
+  "history_url": "https://felipebaltazarasaas.github.io/atlas-report/atlas-adoption-history.json",
+
+  "priority_flows": ["Onboarding externo", "Link de pagamento", "Cartão Mastercard"],
+
+  "priority_subflows": {
+    "Pix": ["Fase 2 — Transferência", "Fase 2 — Receber Pix", "Fase 2 — Pix Agendado"]
+  },
+
+  "product_groups": ["Cartão Mastercard", "Open Finance", "Token / Segurança", "Múltiplos logins"],
 
   "flows": {
     "Pix": ["Pix"],
     "Onboarding externo": ["ExternalOnboarding"],
+    "Link de pagamento": ["PaymentCampaign"],
     "Login & Acesso": ["Login", "Authentication", "ResetPassword", "LoginLinkValidation", "Mfa"],
-    "Cobranças": ["Payment", "PaymentCampaign", "PaymentCheckout", "PaymentDunning", "PaymentSimulator", "PaymentSummary", "PaymentWizard", "Bill", "ChargeNow", "Installment", "Subscription", "InterestFineDiscount"],
+    "Cobranças": ["Payment", "PaymentCheckout", "PaymentDunning", "PaymentSimulator", "PaymentSummary", "PaymentWizard", "Bill", "ChargeNow", "Installment", "Subscription", "InterestFineDiscount"],
     "Listagem de cliente": ["CustomerAccount"],
     "Nota Fiscal": ["Invoice"],
     "Antecipação": ["Anticipation"],
     "Transferências": ["Transfers"],
-    "Cartão virtual": ["AsaasCard"],
+    "Cartão Mastercard": ["AsaasCard"],
     "Open Finance": ["OpenFinance"],
     "Token / Segurança": ["Token"],
     "Múltiplos logins": ["AccountSelection", "AccountUser"]
   },
+
+  "subflows": {
+    "Cobranças": {
+      "rest_label": "Demais telas de cobrança (inclui Pague contas/Bill)",
+      "groups": {
+        "Wizard cobrança": ["PaymentWizard"],
+        "Cobrar agora": ["ChargeNow"]
+      }
+    },
+    "Pix": {
+      "rest_label": "Demais telas Pix",
+      "groups": {
+        "Fase 2 — Transferência": [
+          "Transfers/Views/Selection/TransferTypeSelectionPage.xaml",
+          "Pix/Views/Transfers/Request",
+          "Pix/Views/QrCode/Pay",
+          "Pix/Views/CheckoutConfirmation",
+          "Pix/Views/AwaitingFeedback",
+          "Pix/Views/AsynchronousFeedback",
+          "Pix/Views/Transactions/Receipt"
+        ],
+        "Fase 2 — Receber Pix": [
+          "Pix/Views/QrCode/Request",
+          "Pix/Views/QrCode/Visualization"
+        ],
+        "Fase 2 — Pix Agendado": [
+          "Pix/Views/Transactions/Recurring"
+        ]
+      }
+    }
+  },
+
+  "excluded_pages": [
+    {
+      "group": "Antecipação: fluxo antigo (Material Design), substituído pela Jornada Unificada",
+      "reason": "Telas acessíveis só pelo caminho antigo da Antecipação; a Jornada Unificada (8 telas Atlas) está contada. Somem quando a release parcial da Jornada Unificada (MBT-4825, flag HAS_UNIFIED_ANTICIPATION_JOURNEY) chegar a todos; o código só é removido na limpeza posterior.",
+      "paths": [
+        "Anticipation/Views/Index/AnticipationIndexPage.xaml",
+        "Anticipation/Views/Index/AnticipationIndexTabbedPage.xaml",
+        "Anticipation/Views/Request/AnticipationRequestPage.xaml",
+        "Anticipation/Views/Request/Installment/TypeSelection/AnticipationTypeSelectionPage.xaml",
+        "Anticipation/Views/Request/Batch"
+      ]
+    },
+    {
+      "group": "Antecipação: lista de parcelas e antecipação automática (fora do escopo migrado, decisão da Produto)",
+      "reason": "Decisão do PM: Antecipação migrada \"tudo exceto o detalhe\" (AnticipationDetailPage segue contada como pendente). Atenção: estas 4 telas continuam em Material e ainda são alcançáveis por entradas independentes da flag (banners de cobrança, PromotionalArea, AccountFees, detalhe).",
+      "paths": [
+        "Anticipation/Views/Request/Installment/List/AnticipationInstallmentListPage.xaml",
+        "Anticipation/Views/Automatic"
+      ]
+    },
+    {
+      "group": "Pix Hub, Transferências, Clientes e listagens de cobrança: versão antiga (TestA), substituída pela migrada (TestB)",
+      "reason": "Pares TestA (antigo) / TestB (Atlas) já migrados no release e ainda não em produção. A tela migrada (TestB) ESTÁ contada; só a versão antiga sai da conta, porque some com o rollout.",
+      "paths": [
+        "Pix/Views/Index/TestA/PixIndexPage.xaml",
+        "Transfers/Views/Index/TestA/TransferIndexPage.xaml",
+        "Transfers/Views/Detail/TestA/TransferDetailPage.xaml",
+        "CustomerAccount/Views/Index/TestA/CustomerAccountIndexPage.xaml",
+        "Payment/Views/Index/TestA/PaymentIndexPage.xaml",
+        "Installment/Views/Index/TestA/InstallmentIndexPage.xaml",
+        "Subscription/Views/Index/TestA/SubscriptionIndexPage.xaml"
+      ]
+    }
+  ],
+
+  "considered_migrated": [
+    {"label": "Pix Hub", "paths": ["Pix/Views/Index/TestB/PixIndexPage.xaml"]},
+    {"label": "Transferência: listagem e detalhes", "paths": ["Transfers/Views/Index/TestB", "Transfers/Views/Detail/TestB"]},
+    {"label": "Listagem de clientes (geral)", "paths": ["CustomerAccount/Views/Index/TestB"]},
+    {"label": "Listagem de cobranças (geral e avulsa)", "paths": ["Payment/Views/Index/TestB"]},
+    {"label": "Listagem de cobranças: parcelamento", "paths": ["Installment/Views/Index/TestB"]},
+    {"label": "Listagem de cobranças: assinatura", "paths": ["Subscription/Views/Index/TestB"]},
+    {"label": "Antecipação (jornada unificada, exceto o detalhe)", "paths": ["Anticipation/Views/Index/TestB", "Anticipation/Views/MethodSelection", "Anticipation/Views/Request/ChargeSelection", "Anticipation/Views/Request/DocumentList", "Anticipation/Views/Request/ValueInput", "Anticipation/Views/Settings"]},
+    {"label": "Detalhe da antecipação", "paths": ["Anticipation/Views/Detail"]}
+  ],
 
   "hackathon_migrated": [],
 
@@ -32,24 +121,33 @@
 
   "status_overrides": {},
 
-  "flow_overrides": {},
+  "flow_overrides": {"TransferTypeSelectionPage": "Pix"},
 
   "view_pages": [
     {
       "flow": "Onboarding externo",
-      "glob": "ExternalOnboarding/Views/Components/Steps/**/*StepView.xaml",
+      "glob": "ExternalOnboarding/Views/TestA/Components/Steps/**/*StepView.xaml",
       "exclude_prefixes": ["Base"],
       "replaces": ["ExternalOnboardingPage"]
     }
   ],
 
   "_help": {
+    "chart_projection_default": "true = o gráfico de evolução abre com a linha de cenário e a de meta; false = abre sem elas (o seletor 'Projeção e meta' na página liga/desliga). Para desligar o cenário no relatório inteiro, use assume_priority_migrated: false.",
+    "history_aliases": "Renomeações de fluxo para manter a série contínua no gráfico: {\"Nome antigo\": \"Nome novo\"}. Fluxos divididos (ex.: Link de pagamento saiu de Cobranças) não têm alias.",
+    "history_method": "Rótulo do critério de contagem gravado em cada ponto do histórico. Ao mudar o critério (ex.: novas exclusões), troque o texto: o gráfico marca a mudança.",
+    "history_url": "Histórico já publicado (JSON), lido a cada execução para somar o ponto do dia. Se indisponível, usa só o seed em docs/atlas-adoption-history-seed.json.",
+    "assume_priority_migrated": "true = a projeção assume que as telas dos priority_flows migram (cenário-plano da OKR). false = fechamento do quarter: sem cenário, projetado = realizado.",
     "priority_flows": "Fluxos no escopo da OKR; usados no cenário de meta e marcados como 'prioritário'.",
     "flows": "Mapa Grupo -> pastas em App/AsaasMobile/Features. Qualquer pasta não listada cai em 'Outros'.",
     "hackathon_migrated": "Telas migradas no hackathon (nome da Page ou da ViewModel). Contam como Atlas no cenário PROJETADO.",
     "new_screens_q3": "Telas novas individuais: {\"name\":\"X\",\"flow\":\"Pix\",\"atlas\":true}.",
     "new_products_q3": "Produtos novos do quarter ainda sem código. screens=null aparece como 'a confirmar'; ao informar um número, entram no total e no Atlas projetado.",
     "status_overrides": "Corrige a classificação de uma tela: {\"PixIndexPage\":\"legacy\"}. Use quando design discordar da heurística.",
+    "priority_subflows": "Prioridade só de sub-linhas: {\"Fluxo\": [\"Sub-linha\"]}. Só as telas dessas sub-linhas entram no cenário (ex.: Pix Fase 2), sem assumir o fluxo inteiro.",
+    "subflows": "Quebra um fluxo em sub-linhas: {\"Fluxo\": {\"rest_label\": \"Demais\", \"groups\": {\"Sub-linha\": [\"PastaOuCaminho\"]}}}. Os valores são prefixos de caminho relativos a Features/ (o mais específico vence); telas do fluxo que não casam nenhum prefixo vão para rest_label. Não altera os totais do fluxo pai; a projeção só muda se o fluxo estiver em priority_flows ou a sub-linha em priority_subflows.",
+    "considered_migrated": "Itens migrados que a Produto pediu para considerar, exibidos numa tabela de conferência: [{\"label\":\"Nome\",\"paths\":[\"Pasta/ou/Arquivo.xaml\"]}]. Mostra quantas telas casam e quantas são Atlas; 'Pendente' se alguma não for Atlas.",
+    "excluded_pages": "Telas desconsideradas de TODOS os totais (mas listadas no inventário): [{\"group\":\"Nome\",\"reason\":\"Motivo\",\"paths\":[\"Pasta/ou/Arquivo.xaml\"]}]. Paths são relativos a Features/ e casam arquivo exato ou pasta (fronteira de segmento), então Index/X.xaml não pega Index/TestB/X.xaml. Remova a regra quando o código antigo for apagado (o gerador avisa de caminhos sem tela).",
     "flow_overrides": "Reatribui uma tela a outro grupo: {\"ChargeNowPage\":\"Listagem de cobrança\"}.",
     "view_pages": "Páginas-carrossel cujas views internas contam como páginas. 'glob' é relativo a Features/; 'replaces' remove a página host para não duplicar. Views são classificadas pelo uso de tokens/componentes Atlas (não pelo root AtlasPage)."
   }
