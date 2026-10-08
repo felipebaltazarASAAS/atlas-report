@@ -136,8 +136,8 @@ Alterações que adicionem trabalho ao caminho de inicialização devem ser ques
 
 **Contexto**: Trackers e instrumentação adicionados para investigação de problemas (ex.: `HomeIssueTracker`, `FirstChanceExceptionTracker`).
 
-**Regra 4.1 — Gateada por Remote Config**:
-Instrumentação temporária deve ser gateada por Firebase Remote Config (`FirebaseRemoteConfigManager`), desligada por padrão e desativável sem novo release na loja.
+**Regra 4.1 — Gateada por feature flag do backend**:
+Instrumentação temporária deve ser gateada por feature flag do backend (`FeatureFlag` no asaas-core). A flag chega na resposta do endpoint da própria tela (ex.: `isPixFundRecoveryHubAbTestEnabled` no índice do Pix), ou no `AppInitializationConfigDTO` quando a decisão precisa existir antes do login. Desligada por padrão (campo ausente = desligado) e desativável sem novo release na loja. Não usar Firebase Remote Config (`FirebaseRemoteConfigManager`) para novos gates.
 
 **Regra 4.2 — Mesmo Rigor que Hot Path**:
 Código de instrumentação segue as mesmas regras de hot path e handlers (HOT-001 e HOT-002) — o rigor do review deve ser **maior**, não menor, por rodar em caminhos quentes e em estados anômalos do app.
@@ -154,7 +154,7 @@ Instrumentação sem mecanismo de desativação remota deve ser sinalizada como 
 - [ ] **Hot Path**: Há alocação ou inicialização dentro de loop/callback/request handler? → HOT-001
 - [ ] **FirstChanceException ou handlers globais**: → HOT-002 (guard, sem I/O bloqueante, rate limit, fail-silent)
 - [ ] **App.cs / MauiProgram.cs / AsaasServices.cs**: Há I/O bloqueante no construtor ou inicialização? → HOT-003
-- [ ] **Instrumentação nova (trackers, logs extra)**: Gateada por Remote Config? Sem forma de desligar = violação → HOT-004
+- [ ] **Instrumentação nova (trackers, logs extra)**: Gateada por feature flag do backend? Sem forma de desligar = violação → HOT-004
 
 ### Onde Encontrar Hot Paths no Código
 
