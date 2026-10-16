@@ -1,6 +1,6 @@
 # Checklist de Testes PIX — Asaas Mobile
 
-> **Como usar este documento**: marque apenas as seções relacionadas à área que seu PR alterou. Esta checklist é referenciada pelo Pull Request Template (seção "Checklist de Testes PIX") e pela regra de revisão **FND-008** (`.claude/rules/review-rules-en.md` / `.amazonq/rules/review-rules-en.md`), que solicita o preenchimento sempre que o diff tocar a jornada de Pix.
+> **Como usar este documento**: marque apenas as seções relacionadas à área que seu PR alterou. Esta checklist é referenciada pelo Pull Request Template (seção "Checklist de Testes PIX") e pela regra de revisão **FND-008** (`.claude/rules/review-rules-en.md`), que solicita o preenchimento sempre que o diff tocar a jornada de Pix.
 
 ## Pré-requisitos antes de testar
 
