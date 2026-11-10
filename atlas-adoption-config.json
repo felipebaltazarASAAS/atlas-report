@@ -96,6 +96,20 @@
         "Installment/Views/Index/TestA/InstallmentIndexPage.xaml",
         "Subscription/Views/Index/TestA/SubscriptionIndexPage.xaml"
       ]
+    },
+    {
+      "group": "Onboarding externo: versão antiga (TestA), substituída pela nova (TestB)",
+      "reason": "Pares TestA (antigo) / TestB (Atlas) no código: ExternalOnboardingVariantService sorteia a variante pelo A/B \"Onboarding externo em Atlas APP\" (TestB = nova jornada Atlas). As views TestB ESTÃO contadas; só a versão antiga (TestA) sai da conta, porque some com o rollout. Atenção: o A/B ainda não está em 100% dos usuários; o código antigo segue no release.",
+      "paths": [
+        "ExternalOnboarding/Views/TestA"
+      ]
+    },
+    {
+      "group": "Cartão Mastercard: Index antigo, substituído pelo Index Atlas (flag HAS_ASAAS_CARD_ATLAS_INDEX)",
+      "reason": "Par provado no código: AsaasCardService.ResolveIndexPageViewModel abre Atlas/Index/AsaasCardIndexPage quando a flag HAS_ASAAS_CARD_ATLAS_INDEX está ligada e Views/Index/AsaasCardIndexPage caso contrário; a antiga só tem esse ponto de entrada. O Index Atlas ESTÁ contado. Demais telas antigas do Cartão (Actions, Settings, Detail, Request) seguem contadas como legado: a jornada antiga de solicitação (Views/Request/Mastercard) ainda é aberta pela lista Atlas e pelo bottom sheet de novo cartão, então não some com o A/B.",
+      "paths": [
+        "AsaasCard/Views/Index/AsaasCardIndexPage.xaml"
+      ]
     }
   ],
 
@@ -107,7 +121,13 @@
     {"label": "Listagem de cobranças: parcelamento", "paths": ["Installment/Views/Index/TestB"]},
     {"label": "Listagem de cobranças: assinatura", "paths": ["Subscription/Views/Index/TestB"]},
     {"label": "Antecipação (jornada unificada, exceto o detalhe)", "paths": ["Anticipation/Views/Index/TestB", "Anticipation/Views/MethodSelection", "Anticipation/Views/Request/ChargeSelection", "Anticipation/Views/Request/DocumentList", "Anticipation/Views/Request/ValueInput", "Anticipation/Views/Settings"]},
-    {"label": "Detalhe da antecipação", "paths": ["Anticipation/Views/Detail"]}
+    {"label": "Detalhe da antecipação", "paths": ["Anticipation/Views/Detail"]},
+    {"label": "Onboarding externo: nova jornada Atlas (TestB)", "paths": ["ExternalOnboarding/Views/TestB"],
+     "note": "A/B \"Onboarding externo em Atlas APP\": conta como migrado no código, não como entregue para 100% dos usuários. A versão antiga (TestA) está fora da conta."},
+    {"label": "Cartão: Index Atlas", "paths": ["AsaasCard/Atlas/Index"],
+     "note": "Flag HAS_ASAAS_CARD_ATLAS_INDEX: conta como migrado no código. O Index antigo está fora da conta."},
+    {"label": "Cartão: nova jornada de solicitação (A/B)", "paths": ["AsaasCard/Atlas/Request"],
+     "note": "A/B \"Nova Jornada de Solicitacao de Cartao\": conta como migrada no código. A tela antiga (AsaasCardMastercardRequestPage) segue contada como legado porque ainda é aberta pela lista Atlas e pelo bottom sheet de novo cartão."}
   ],
 
   "hackathon_migrated": [],
@@ -126,9 +146,14 @@
   "view_pages": [
     {
       "flow": "Onboarding externo",
-      "glob": "ExternalOnboarding/Views/TestA/Components/Steps/**/*StepView.xaml",
+      "glob": "ExternalOnboarding/Views/TestB/Components/Steps/**/*StepView.xaml",
       "exclude_prefixes": ["Base"],
       "replaces": ["ExternalOnboardingPage"]
+    },
+    {
+      "flow": "Onboarding externo",
+      "glob": "ExternalOnboarding/Views/TestA/Components/Steps/**/*StepView.xaml",
+      "exclude_prefixes": ["Base"]
     }
   ],
 
@@ -146,7 +171,7 @@
     "status_overrides": "Corrige a classificação de uma tela: {\"PixIndexPage\":\"legacy\"}. Use quando design discordar da heurística.",
     "priority_subflows": "Prioridade só de sub-linhas: {\"Fluxo\": [\"Sub-linha\"]}. Só as telas dessas sub-linhas entram no cenário (ex.: Pix Fase 2), sem assumir o fluxo inteiro.",
     "subflows": "Quebra um fluxo em sub-linhas: {\"Fluxo\": {\"rest_label\": \"Demais\", \"groups\": {\"Sub-linha\": [\"PastaOuCaminho\"]}}}. Os valores são prefixos de caminho relativos a Features/ (o mais específico vence); telas do fluxo que não casam nenhum prefixo vão para rest_label. Não altera os totais do fluxo pai; a projeção só muda se o fluxo estiver em priority_flows ou a sub-linha em priority_subflows.",
-    "considered_migrated": "Itens migrados que a Produto pediu para considerar, exibidos numa tabela de conferência: [{\"label\":\"Nome\",\"paths\":[\"Pasta/ou/Arquivo.xaml\"]}]. Mostra quantas telas casam e quantas são Atlas; 'Pendente' se alguma não for Atlas.",
+    "considered_migrated": "Itens migrados que a Produto pediu para considerar, exibidos numa tabela de conferência: [{\"label\":\"Nome\",\"paths\":[\"Pasta/ou/Arquivo.xaml\"],\"note\":\"Observação opcional, ex.: A/B ainda não em 100%\"}]. Mostra quantas telas casam e quantas são Atlas; 'Pendente' se alguma não for Atlas.",
     "excluded_pages": "Telas desconsideradas de TODOS os totais (mas listadas no inventário): [{\"group\":\"Nome\",\"reason\":\"Motivo\",\"paths\":[\"Pasta/ou/Arquivo.xaml\"]}]. Paths são relativos a Features/ e casam arquivo exato ou pasta (fronteira de segmento), então Index/X.xaml não pega Index/TestB/X.xaml. Remova a regra quando o código antigo for apagado (o gerador avisa de caminhos sem tela).",
     "flow_overrides": "Reatribui uma tela a outro grupo: {\"ChargeNowPage\":\"Listagem de cobrança\"}.",
     "view_pages": "Páginas-carrossel cujas views internas contam como páginas. 'glob' é relativo a Features/; 'replaces' remove a página host para não duplicar. Views são classificadas pelo uso de tokens/componentes Atlas (não pelo root AtlasPage)."
