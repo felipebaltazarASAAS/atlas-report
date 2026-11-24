@@ -6,7 +6,7 @@
 
   "chart_projection_default": true,
   "history_aliases": {"Cartão virtual": "Cartão Mastercard"},
-  "history_method": "Critério atual (versões antigas fora da contagem, escopo Q4)",
+  "history_method": "Critério atual (versões antigas e telas legadas do Cartão a excluir fora da contagem, escopo Q4)",
   "history_url": "https://felipebaltazarasaas.github.io/atlas-report/atlas-adoption-history.json",
 
   "priority_flows": ["Onboarding externo", "Link de pagamento", "Cartão Mastercard"],
@@ -106,14 +106,27 @@
     },
     {
       "group": "Cartão Mastercard: Index antigo, substituído pelo Index Atlas (flag HAS_ASAAS_CARD_ATLAS_INDEX)",
-      "reason": "Par provado no código: AsaasCardService.ResolveIndexPageViewModel abre Atlas/Index/AsaasCardIndexPage quando a flag HAS_ASAAS_CARD_ATLAS_INDEX está ligada e Views/Index/AsaasCardIndexPage caso contrário; a antiga só tem esse ponto de entrada. O Index Atlas ESTÁ contado. Demais telas antigas do Cartão (Actions, Settings, Detail, Request) seguem contadas como legado: a jornada antiga de solicitação (Views/Request/Mastercard) ainda é aberta pela lista Atlas e pelo bottom sheet de novo cartão, então não some com o A/B.",
+      "reason": "Par provado no código: AsaasCardService.ResolveIndexPageViewModel abre Atlas/Index/AsaasCardIndexPage quando a flag HAS_ASAAS_CARD_ATLAS_INDEX está ligada e Views/Index/AsaasCardIndexPage caso contrário; a antiga só tem esse ponto de entrada. O Index Atlas ESTÁ contado. As demais telas antigas do Cartão (Actions, Detail, Request) seguem contadas, exceto as 5 do grupo seguinte, que a Produto vai excluir: a jornada de solicitação Mastercard (Views/Request/Mastercard) está em teste A/B e a Produto pediu para contá-la como migrada (ver status_overrides).",
       "paths": [
         "AsaasCard/Views/Index/AsaasCardIndexPage.xaml"
+      ]
+    },
+    {
+      "group": "Cartão Mastercard: telas legadas a excluir (pedido da Produto, 2026-11-18)",
+      "reason": "A Jeniffer pediu para tirar da contagem estas telas legadas do Cartão, que serão removidas do código depois, junto com o Pedro. As telas de recarga (AsaasCardRechargeRequestPage e AsaasCardRechargeSummaryPage) também estavam na lista, mas não existem mais no release, então não há o que excluir. Remova esta regra quando o código for apagado (o gerador avisa de caminhos sem tela).",
+      "paths": [
+        "AsaasCard/Views/Request/AsaasCardRequestPage.xaml",
+        "AsaasCard/Views/Request/HolderInfo/AsaasCardRequestHolderInfoPage.xaml",
+        "AsaasCard/Views/Request/HolderInfo/CreditCard/AsaasCardCreditRequestPage.xaml",
+        "AsaasCard/Views/Detail/Credit/AsaasCardCreditDetailPage.xaml",
+        "AsaasCard/Views/Detail/Debit/AsaasCardDebitDetailPage.xaml"
       ]
     }
   ],
 
   "considered_migrated": [
+    {"label": "Cartão Mastercard: solicitação em teste A/B (informado pela Produto)", "paths": ["AsaasCard/Views/Request/Mastercard/AsaasCardMastercardRequestPage.xaml", "AsaasCard/Views/Request/HolderInfo/Mastercard/AsaasCardMastercardRequestHolderInfoPage.xaml", "AsaasCard/Views/Request/Mastercard/Confirmation/AsaasCardMastercardRequestConfirmationPage.xaml"], "note": "Em teste A/B; a Produto pediu para considerar como migrado (2026-11-18). No código do release o XAML ainda não é Atlas."},
+    {"label": "Cartão Mastercard: Detalhe, Configurações e Apelido (informado pela Produto)", "paths": ["AsaasCard/Views/Detail/Mastercard/AsaasCardMastercardDetailPage.xaml", "AsaasCard/Views/Settings/AsaasCardSettingsPage.xaml", "AsaasCard/Views/Settings/Nickname/AsaasCardSettingsNicknamePage.xaml"], "note": "Contadas como Atlas por informação da Produto (2026-11-18); no código do release o XAML ainda está em Material/híbrido."},
     {"label": "Pix Hub", "paths": ["Pix/Views/Index/TestB/PixIndexPage.xaml"]},
     {"label": "Transferência: listagem e detalhes", "paths": ["Transfers/Views/Index/TestB", "Transfers/Views/Detail/TestB"]},
     {"label": "Listagem de clientes (geral)", "paths": ["CustomerAccount/Views/Index/TestB"]},
@@ -139,7 +152,14 @@
     {"name": "Widget NPS (POC)", "screens": null, "atlas": true, "note": "POC de nova ferramenta. Preencher 'screens' com a contagem prevista."}
   ],
 
-  "status_overrides": {},
+  "status_overrides": {
+    "AsaasCardMastercardDetailPage": "atlas",
+    "AsaasCardSettingsPage": "atlas",
+    "AsaasCardSettingsNicknamePage": "atlas",
+    "AsaasCardMastercardRequestPage": "atlas",
+    "AsaasCardMastercardRequestHolderInfoPage": "atlas",
+    "AsaasCardMastercardRequestConfirmationPage": "atlas"
+  },
 
   "flow_overrides": {"TransferTypeSelectionPage": "Pix"},
 
