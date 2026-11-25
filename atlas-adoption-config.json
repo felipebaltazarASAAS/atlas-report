@@ -35,7 +35,7 @@
 
   "subflows": {
     "Cobranças": {
-      "rest_label": "Demais telas de cobrança (inclui Pague contas/Bill)",
+      "rest_label": "Demais telas de cobrança (inclui Pague Contas/Bill)",
       "groups": {
         "Wizard cobrança": ["PaymentWizard"],
         "Cobrar agora": ["ChargeNow"]
